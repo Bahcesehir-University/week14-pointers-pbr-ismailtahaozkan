@@ -1,0 +1,100 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Warm-up program runs without crashing
+      id: warm-up-program-runs-without-crashing
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Warm-up program runs without crashing
+        setup-command: ''
+        command: make test_1
+        timeout: 10
+        max-score: 8
+    - name: Pointer dereference & reference alias modify originals
+      id: pointer-dereference-reference-alias-modify-originals
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Pointer dereference & reference alias modify originals
+        setup-command: ''
+        command: make test_2
+        timeout: 10
+        max-score: 12
+    - name: swapByPointer
+      id: swapbypointer
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: swapByPointer
+        setup-command: ''
+        command: make test_3_1
+        timeout: 10
+        max-score: 16
+    - name: swaps via reference
+      id: swaps-via-reference
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: swaps via reference
+        setup-command: ''
+        command: make test_3_2
+        timeout: 10
+        max-score: 16
+    - name: adds 1 in place
+      id: adds-1-in-place
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: adds 1 in place
+        setup-command: ''
+        command: make test_3_3
+        timeout: 10
+        max-score: 8
+    - name: returns sum + sets out-count
+      id: returns-sum-sets-out-count
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: returns sum + sets out-count
+        setup-command: ''
+        command: make test_3_4
+        timeout: 10
+        max-score: 20
+    - name: rounds & kills noise
+      id: rounds-kills-noise
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: rounds & kills noise
+        setup-command: ''
+        command: make test_4_1
+        timeout: 10
+        max-score: 10
+    - name: clamps into bounds
+      id: clamps-into-bounds
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: clamps into bounds
+        setup-command: ''
+        command: make test_4_2
+        timeout: 10
+        max-score: 10
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        WARM-UP-PROGRAM-RUNS-WITHOUT-CRASHING_RESULTS: "${{steps.warm-up-program-runs-without-crashing.outputs.result}}"
+        POINTER-DEREFERENCE-REFERENCE-ALIAS-MODIFY-ORIGINALS_RESULTS: "${{steps.pointer-dereference-reference-alias-modify-originals.outputs.result}}"
+        SWAPBYPOINTER_RESULTS: "${{steps.swapbypointer.outputs.result}}"
+        SWAPS-VIA-REFERENCE_RESULTS: "${{steps.swaps-via-reference.outputs.result}}"
+        ADDS-1-IN-PLACE_RESULTS: "${{steps.adds-1-in-place.outputs.result}}"
+        RETURNS-SUM-SETS-OUT-COUNT_RESULTS: "${{steps.returns-sum-sets-out-count.outputs.result}}"
+        ROUNDS-KILLS-NOISE_RESULTS: "${{steps.rounds-kills-noise.outputs.result}}"
+        CLAMPS-INTO-BOUNDS_RESULTS: "${{steps.clamps-into-bounds.outputs.result}}"
+      with:
+        runners: warm-up-program-runs-without-crashing,pointer-dereference-reference-alias-modify-originals,swapbypointer,swaps-via-reference,adds-1-in-place,returns-sum-sets-out-count,rounds-kills-noise,clamps-into-bounds
